@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思维工具导航站</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #222;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* 导航栏样式 */
+        .nav-container {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .main-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #222;
+        }
+        
+        .category-nav {
+            background-color: #f5f5f5;
+            padding: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .category-list {
+            display: flex;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 10px;
+        }
+        
+        .category-item {
+            white-space: nowrap;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: white;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+        
+        .category-item:hover {
+            background-color: #eee;
+        }
+        
+        .category-item.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        /* 导航网格 */
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .site-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .site-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.4rem;
+        }
+        
+        .card-image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+            height: 50%;
+        }
+        
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-tag {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        
+        .card-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .card-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .card-link:hover {
+            border-color: #3498db;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .site-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            header {
+                margin-bottom: 40px;
+            }
+            
+            .main-nav {
+                height: 60px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .category-list {
+                padding-bottom: 5px;
+            }
+            
+            .category-nav {
+                padding: 10px 0;
+            }
+        }
+        
+        /* 底部样式 */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 30px 0;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-container">
+        <nav class="main-nav">
+            <div class="logo">思维工具导航</div>
+        </nav>
+        <div class="category-nav">
+            <ul class="category-list">
+                <li class="category-item active" data-category="all">全部</li>
+                <li class="category-item" data-category="思维工具">思维工具</li>
+                <li class="category-item" data-category="心智模型">心智模型</li>
+                <li class="category-item" data-category="创造性思考">创造性思考</li>
+                <li class="category-item" data-category="逻辑思考">逻辑思考</li>
+                <li class="category-item" data-category="效率提升">效率提升</li>
+                <li class="category-item" data-category="思维锻炼">思维锻炼</li>
+                <li class="category-item" data-category="推理能力">推理能力</li>
+                <li class="category-item" data-category="认知提升">认知提升</li>
+                <li class="category-item" data-category="思维导图">思维导图</li>
+                <li class="category-item" data-category="系统思维">系统思维</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>思维工具导航</h1>
+            <p class="subtitle">精选思维训练、效率提升与逻辑思考工具资源，帮助你提升思考能力和解决问题的效率。</p>
+        </header>
+        
+        <div class="site-grid">
+            <!-- 网站卡片 1 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">untools.co</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">思维工具</span>
+                    <h3>Untools</h3>
+                    <p class="card-description">思维工具和框架的精选集合，帮助你解决问题、做出决策和理解系统。设计简洁，分类清晰，每个工具都有详细解释和使用场景。</p>
+                    <a href="https://untools.co/" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 2 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">mentalmodels.co</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">心智模型</span>
+                    <h3>Mental Models</h3>
+                    <p class="card-description">全面的心智模型资源库，涵盖决策、概率思维和系统思考等领域。提供实用框架帮助你在复杂环境中做出更明智的选择。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 3 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">thinkersplayground.com</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">创造性思考</span>
+                    <h3>Thinkers Playground</h3>
+                    <p class="card-description">专注于创造性思考和思维训练的平台，提供互动练习和思维挑战，帮助你突破常规思维，培养创新能力。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 4 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">logicalthinking.io</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">逻辑思考</span>
+                    <h3>Logical Thinking</h3>
+                    <p class="card-description">逻辑思考和批判性思维方法库，提供清晰的思维步骤和框架，帮助你识别谬误、构建论证和分析复杂问题。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 5 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">productivitystack.com</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">效率提升</span>
+                    <h3>Productivity Stack</h3>
+                    <p class="card-description">效率提升工具和技巧的综合平台，从时间管理到注意力聚焦，帮助你建立高效工作流程，减少认知负荷。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 6 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">mindgym.org</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">思维锻炼</span>
+                    <h3>Mind Gym</h3>
+                    <p class="card-description">思维锻炼和脑力训练平台，提供一系列思维游戏和练习，通过系统性挑战提升你的认知能力和思维灵活性。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 7 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">reasonwell.com</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">推理能力</span>
+                    <h3>Reason Well</h3>
+                    <p class="card-description">推理能力和决策工具集合，专注于帮助你构建清晰的论证、评估证据和做出理性决策，避免常见认知偏见。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 8 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">cognitiveboost.net</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">认知提升</span>
+                    <h3>Cognitive Boost</h3>
+                    <p class="card-description">认知提升资源平台，集合了记忆技巧、学习方法和思维策略，帮助你优化认知过程，提高信息处理和记忆能力。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 9 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">thoughtmaps.io</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">思维导图</span>
+                    <h3>Thought Maps</h3>
+                    <p class="card-description">思维导图和思考框架资源，提供视觉化思考工具和模板，帮助你组织思想、连接概念和发现洞见。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+            
+            <!-- 网站卡片 10 -->
+            <div class="site-card">
+                <div class="card-header">
+                    <div class="card-image">systemsthinking.tools</div>
+                    <div class="card-image-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <span class="card-tag">系统思维</span>
+                    <h3>Systems Thinking Tools</h3>
+                    <p class="card-description">系统思维方法论和工具集，帮助你理解复杂系统的行为、识别因果关系和反馈循环，培养整体思考能力。</p>
+                    <a href="#" class="card-link" target="_blank">访问网站 →</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 思维工具导航 | 精选思维训练、效率提升与逻辑思考资源</p>
+        </footer>
+    </div>
+
+    <script>
+        // 导航栏分类筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-item');
+            const siteCards = document.querySelectorAll('.site-card');
+            
+            // 点击分类按钮事件
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // 给当前点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 筛选网站卡片
+                    siteCards.forEach(card => {
+                        const cardTag = card.querySelector('.card-tag').textContent;
+                        
+                        if (category === 'all' || cardTag === category) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
